@@ -26,7 +26,7 @@ func main() {
 // Data before EOF not terminated by a line feed is discarded.
 func scanPosixLines(d []byte, atEOF bool) (int, []byte, error) {
 	if i := bytes.IndexByte(d, '\n'); i >= 0 {
-		return i+1, d[:i], nil
+		return i + 1, d[:i], nil
 	}
 	// If atEOF, return nothing; otherwise, request more data.
 	return 0, nil, nil
