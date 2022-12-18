@@ -10,7 +10,8 @@ import (
 )
 
 func main() {
-	table, err := readTsv(os.Stdin)
+	esc := true
+	table, err := readTsv(os.Stdin, esc)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
 		os.Exit(1)
@@ -33,7 +34,7 @@ func scanPosixLines(d []byte, atEOF bool) (int, []byte, error) {
 	return 0, nil, nil
 }
 
-func readTsv(f io.Reader) ([]map[string]string, error) {
+func readTsv(f io.Reader, esc bool) ([]map[string]string, error) {
 	scanner := bufio.NewScanner(f)
 	scanner.Split(scanPosixLines)
 
@@ -44,7 +45,7 @@ func readTsv(f io.Reader) ([]map[string]string, error) {
 
 	table := make([]map[string]string, 0)
 	for lnum := 2; scanner.Scan(); lnum++ {
-		row, err := createRow(scanner.Text(), head)
+		row, err := createRow(scanner.Text(), head, esc)
 		if err != nil {
 			return table, fmt.Errorf("line %d: %v\n", lnum, err)
 		}
@@ -53,14 +54,27 @@ func readTsv(f io.Reader) ([]map[string]string, error) {
 	return table, nil
 }
 
-func createRow(s string, head []string) (map[string]string, error) {
+func createRow(s string, head []string, esc bool) (map[string]string, error) {
 	cols := strings.Split(s, "\t")
 	if len(cols) != len(head) {
 		return nil, fmt.Errorf("invalid number of columns")
 	}
 	row := make(map[string]string)
-	for i, colName := range head {
-		row[colName] = cols[i]
+	for i, v := range head {
+		col, err := escapeIf(cols[i], esc)
+		if err != nil {
+			return nil, fmt.Errorf(`column %d "%s": %v`, i, v, err)
+		}
+		row[v] = col
 	}
 	return row, nil
+}
+
+// escapeIf wraps escape, returning s
+// escaped if esc is true, unchanged otherwise.
+func escapeIf(s string, esc bool) (string, error) {
+	if esc {
+		return escape(s)
+	}
+	return s, nil
 }
