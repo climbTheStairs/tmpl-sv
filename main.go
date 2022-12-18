@@ -6,17 +6,22 @@ import (
 	"os"
 )
 
+type Table struct {
+	Head []string
+	Body []map[string]string
+}
+
 func main() {
-	table, head, err := readTsv(os.Stdin)
+	t, err := readTsv(os.Stdin)
 	if err != nil {
 		errExit(err)
 	}
 	if esc := true; esc {
-		if table, err = escapeTable(table, head); err != nil {
+		if err := escapeTable(&t); err != nil {
 			errExit(err)
 		}
 	}
-	if err := applyTmpl(os.Args[1], table, os.Stdout); err != nil {
+	if err := applyTmpl(os.Args[1], &t, os.Stdout); err != nil {
 		errExit(err)
 	}
 }

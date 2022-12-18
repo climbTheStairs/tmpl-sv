@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
-func applyTmpl(fname string, d []map[string]string, out io.Writer) error {
+// TODO: Would passing Table instead of *Table
+// be significantly more expensive?
+func applyTmpl(fname string, t *Table, out io.Writer) error {
 	fnmap := template.FuncMap{
 		"toStrSlice": toStrSlice,
 	}
@@ -18,7 +20,7 @@ func applyTmpl(fname string, d []map[string]string, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return tmpl.Execute(out, d)
+	return tmpl.Execute(out, t.Body)
 }
 
 func toStrSlice(s string) []string {
