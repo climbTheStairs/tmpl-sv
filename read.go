@@ -12,24 +12,22 @@ import (
 func main() {
 	table, head, err := readTsv(os.Stdin)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
-		os.Exit(1)
+		errExit(err)
 	}
 	if esc := true; esc {
-		t, err := escapeTable(table, head)
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr,
-				"%s: %v\n", os.Args[0], err)
-			os.Exit(1)
+		if table, err = escapeTable(table, head); err != nil {
+			errExit(err)
 		}
-		table = t
 	}
 	if err := applyTmpl(os.Args[1], table, os.Stdout); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
-		os.Exit(1)
+		errExit(err)
 	}
 }
 
+func errExit(e error) {
+	_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], e)
+	os.Exit(1)
+}
 // scanPosixLines is like bufio.ScanLines
 // but it adheres strictly to POSIX's definition of a line.
 // Carriage returns are always considered part of a line.
