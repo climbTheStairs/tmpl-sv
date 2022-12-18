@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 )
@@ -13,10 +13,12 @@ import (
 func main() {
 	table, err := readTsv(os.Stdin)
 	if err != nil {
-		log.Fatal(err)
+		_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
+		os.Exit(1)
 	}
 	if err := applyTmpl(os.Args[1], table, os.Stdout); err != nil {
-		log.Fatal(err)
+		_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
+		os.Exit(1)
 	}
 }
 
@@ -37,15 +39,20 @@ func readTsv(f io.Reader) ([]map[string]string, error) {
 	scanner.Split(scanPosixLines)
 
 	if ok := scanner.Scan(); !ok {
-		return nil, errors.New("readTsv: cannot read first line")
+		return nil, errors.New("cannot read initial line")
 	}
 	head := strings.Split(scanner.Text(), "\t")
 
 	table := make([]map[string]string, 0)
-	for scanner.Scan() {
+	for lnum := 2; scanner.Scan(); lnum++ {
+		cols := strings.Split(scanner.Text(), "\t")
+		if len(cols) != len(head) {
+			return table, fmt.Errorf("line %d contains "+
+				"invalid number of columns", lnum)
+		}
 		row := make(map[string]string)
-		for i, v := range strings.Split(scanner.Text(), "\t") {
-			row[head[i]] = v
+		for i, colName := range head {
+			row[colName] = cols[i]
 		}
 		table = append(table, row)
 	}

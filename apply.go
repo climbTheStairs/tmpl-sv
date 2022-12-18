@@ -11,10 +11,13 @@ func applyTmpl(fname string, d []map[string]string, out io.Writer) error {
 	fnmap := template.FuncMap{
 		"toStrSlice": toStrSlice,
 	}
-	tmpl := template.Must(template.
+	tmpl, err := template.
 		New(filepath.Base(fname)).
 		Funcs(fnmap).
-		ParseFiles(fname))
+		ParseFiles(fname)
+	if err != nil {
+		return err
+	}
 	return tmpl.Execute(out, d)
 }
 
