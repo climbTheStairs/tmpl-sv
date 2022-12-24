@@ -18,9 +18,9 @@ func readTsv(f io.Reader) (Table, error) {
 	}
 	t.Head = strings.Split(scanner.Text(), "\t")
 
-	for lnum := 2; scanner.Scan(); lnum++ {
+	for rowNum := 1; scanner.Scan(); rowNum++ {
 		if err := appendRow(&t, scanner.Text()); err != nil {
-			return t, fmt.Errorf("line %d: %v", lnum, err)
+			return t, fmt.Errorf("row %d: %v", rowNum, err)
 		}
 	}
 	return t, nil
@@ -43,13 +43,13 @@ func appendRow(t *Table, s string) error {
 
 func escapeTable(t *Table) error {
 	var err error
-	for lnum, row := range t.Body {
-		lnum += 2
+	for rowNum, row := range t.Body {
+		rowNum += 1
 		for i, k := range t.Head {
 			if row[k], err = escape(row[k]); err != nil {
-				return fmt.Errorf(`line %d: `+
+				return fmt.Errorf(`row %d: `+
 					`column %d "%s": %v`,
-					lnum, i, k, err)
+					rowNum, i, k, err)
 			}
 		}
 	}
