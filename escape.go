@@ -13,9 +13,10 @@ var escapes = map[byte]byte{
 }
 
 // Escape returns a copy of string s
-// with each non-overlapping two-character substring beginning with '\\'
+// with each non-overlapping two-character substring
+// beginning with a backslash ('\\')
 // replaced by the character corresponding to that escape sequence.
-// If s contains invalid escapes or unescaped backslashes ("\"),
+// If s contains invalid escapes or unescaped backslashes,
 // Escape makes no further replacements and returns a non-nil error.
 func Escape(s string) (string, error) {
 	var b strings.Builder

@@ -45,7 +45,7 @@ func AppendRow(t *Table, cols []string) error {
 
 // EscapeTable replaces each cell in t
 // with the output of calling Escape on that cell.
-// If any cells contain invalid escapes or unescaped backslashes ("\").
+// If any cells contain invalid escapes or unescaped backslashes ('\\').
 // EscapeTable makes no further replacements and returns a non-nil error.
 func EscapeTable(t *Table) error {
 	for rowNum, row := range t.Body {
