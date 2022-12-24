@@ -54,10 +54,10 @@ func TestEscapeErr(t *testing.T) {
 	}
 }
 
-/*
 func BenchmarkEscape(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_ = uniq1(randSlice())
+		var t *testing.T
+		TestEscape(t)
+		TestEscapeErr(t)
 	}
 }
-*/
