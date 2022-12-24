@@ -46,7 +46,7 @@ func escapeTable(t *Table) error {
 	for rowNum, row := range t.Body {
 		rowNum += 1
 		for i, k := range t.Head {
-			if row[k], err = escape(row[k]); err != nil {
+			if row[k], err = Escape(row[k]); err != nil {
 				return fmt.Errorf(`row %d: `+
 					`column %d "%s": %v`,
 					rowNum, i, k, err)

@@ -36,9 +36,9 @@ var errTests = map[string]string{
 
 func TestEscape(t *testing.T) {
 	for in, expect := range simpleTests {
-		out, err := escape(in)
+		out, err := Escape(in)
 		if err != nil || out != expect {
-			t.Fatalf(`escape(%q) = %q, %v; expected %q, %v`,
+			t.Fatalf(`Escape(%q) = %q, %v; expected %q, %v`,
 				in, out, err, expect, nil)
 		}
 	}
@@ -46,9 +46,9 @@ func TestEscape(t *testing.T) {
 
 func TestEscapeErr(t *testing.T) {
 	for in, expect := range errTests {
-		_, err := escape(in)
+		_, err := Escape(in)
 		if err == nil || err.Error() != expect {
-			t.Fatalf(`escape(%q) = _, %v; expected _, %v`,
+			t.Fatalf(`Escape(%q) = _, %v; expected _, %v`,
 				in, err, expect)
 		}
 	}

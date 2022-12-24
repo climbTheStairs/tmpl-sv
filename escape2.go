@@ -18,7 +18,7 @@ func init() {
 	escaper = strings.NewReplacer(escapes...)
 }
 
-func escape(s string) (string, error) {
+func Escape(s string) (string, error) {
 	ss := strings.Split(s, `\\`)
 	for i, v := range ss {
 		v = escaper.Replace(v)
