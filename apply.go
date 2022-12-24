@@ -3,24 +3,24 @@ package main
 import (
 	"html/template"
 	"io"
-	"path/filepath"
 	"strings"
 )
 
-// ApplyTmpl reads the template from the file called fname
-// and executes it on t, writing the output to out.
-func ApplyTmpl(fname string, t *Table, out io.Writer) error {
+// ApplyTmpl reads the template from r,
+// executes it on t, and writes the output to w.
+func ApplyTmpl(r io.Reader, t *Table, w io.Writer) error {
 	fnmap := template.FuncMap{
 		"toStrSlice": toStrSlice,
 	}
-	tmpl, err := template.
-		New(filepath.Base(fname)).
-		Funcs(fnmap).
-		ParseFiles(fname)
+	b, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}
-	return tmpl.Execute(out, t.Body)
+	tmpl, err := template.New("").Funcs(fnmap).Parse(string(b))
+	if err != nil {
+		return err
+	}
+	return tmpl.Execute(w, t.Body)
 }
 
 // toStrSlice is meant to be used inside templates.

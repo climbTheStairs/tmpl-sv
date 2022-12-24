@@ -24,7 +24,11 @@ func main() {
 			errExit(err)
 		}
 	}
-	if err := ApplyTmpl(os.Args[1], &t, os.Stdout); err != nil {
+	f, err := os.Open(os.Args[1])
+	if err != nil {
+		errExit(err)
+	}
+	if err := ApplyTmpl(f, &t, os.Stdout); err != nil {
 		errExit(err)
 	}
 }

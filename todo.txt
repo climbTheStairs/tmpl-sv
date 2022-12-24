@@ -4,4 +4,3 @@ does passing a map as a fn arg make a new copy, and is it expensive?
 is passing a struct instead of a ptr as a fn arg significantly more expensive?
 when to use a method of a struct type, and when to pass a struct ptr?
 write more tests
-generalize ApplyTmpl to read from any io.Reader
