@@ -22,7 +22,7 @@ func ReadTsv(f io.Reader) (Table, error) {
 
 	for rowNum := 1; scanner.Scan(); rowNum++ {
 		cols := strings.Split(scanner.Text(), "\t")
-		if err := appendRow(&t, cols); err != nil {
+		if err := AppendRow(&t, cols); err != nil {
 			return t, fmt.Errorf("row %d: %v", rowNum, err)
 		}
 	}
@@ -61,24 +61,4 @@ func EscapeTable(t *Table) error {
 		}
 	}
 	return nil
-}
-
-// escapeIf wraps escape, returning s
-// escaped if esc is true, unchanged otherwise.
-func escapeIf(s string, esc bool) (string, error) {
-	if esc {
-		return escape(s)
-	}
-	return s, nil
-}
-
-func escape(s string) (string, error) {
-	ss := strings.Split(s, `\\`)
-	for i, v := range ss {
-		ss[i] = escaper.Replace(v)
-		if strings.Contains(ss[i], `\`) {
-			return "", fmt.Errorf("...")
-		}
-	}
-	return strings.Join(ss, `\`), nil
 }

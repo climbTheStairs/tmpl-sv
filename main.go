@@ -15,12 +15,12 @@ type Table struct {
 }
 
 func main() {
-	t, err := readTsv(os.Stdin)
+	t, err := ReadTsv(os.Stdin)
 	if err != nil {
 		errExit(err)
 	}
 	if esc := true; esc {
-		if err := escapeTable(&t); err != nil {
+		if err := EscapeTable(&t); err != nil {
 			errExit(err)
 		}
 	}
