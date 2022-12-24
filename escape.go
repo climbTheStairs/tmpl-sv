@@ -12,10 +12,11 @@ var escapes = map[byte]byte{
 	'\\': '\\',
 }
 
-// Escape takes a string s
-// and replaces each two-character sequence that begins with '\\'
-// with a special character corresponding to that escape sequence,
-// or returns an error if the escape is invalid.
+// Escape returns a copy of string s
+// with each non-overlapping two-character substring beginning with '\\'
+// replaced by the character corresponding to that escape sequence.
+// If s contains invalid escapes or unescaped backslashes ("\"),
+// Escape makes no further replacements and returns a non-nil error.
 func Escape(s string) (string, error) {
 	var b strings.Builder
 	b.Grow(len(s))
@@ -41,7 +42,7 @@ func Escape(s string) (string, error) {
 		b.WriteString(s[start:i])
 		b.WriteByte(escaped)
 		// Move forward in s by 2,
-		// to pass the two-character escape sequence.
+		// to pass the two-character escape substring.
 		i += 2
 		start = i
 	}
