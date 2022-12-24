@@ -26,8 +26,6 @@ func readTsv(f io.Reader) (Table, error) {
 	return t, nil
 }
 
-// TODO: What would be different if I used instead
-// a func (t *Table) method?
 func appendRow(t *Table, s string) error {
 	cols := strings.Split(s, "\t")
 	if len(cols) != len(t.Head) {

@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-// TODO: Would passing Table instead of *Table
-// be significantly more expensive?
 func applyTmpl(fname string, t *Table, out io.Writer) error {
 	fnmap := template.FuncMap{
 		"toStrSlice": toStrSlice,
