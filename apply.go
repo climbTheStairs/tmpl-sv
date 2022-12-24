@@ -20,7 +20,7 @@ func ApplyTmpl(r io.Reader, t *Table, w io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return tmpl.Execute(w, t.Body)
+	return tmpl.Execute(w, *t)
 }
 
 // toStrSlice is meant to be used inside templates.
