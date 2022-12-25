@@ -54,6 +54,16 @@ func TestUnescapeErr(t *testing.T) {
 	}
 }
 
+func TestEscape(t *testing.T) {
+	for expect, in := range simpleTests {
+		out := Escape(in)
+		if out != expect {
+			t.Fatalf(`Escape(%q) = %q; expected %q`,
+				in, out, expect)
+		}
+	}
+}
+
 func BenchmarkUnescape(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		var t *testing.T

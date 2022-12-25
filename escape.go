@@ -17,6 +17,26 @@ var Escapes = map[byte]byte{
 	'\\': '\\',
 }
 
+var escaper *strings.Replacer
+
+func init() {
+	oldnew := make([]string, 0, len(Escapes)*2)
+	for escaped, unescaped := range Escapes {
+		oldnew = append(oldnew,
+			string(unescaped), "\\"+string(escaped))
+	}
+	escaper = strings.NewReplacer(oldnew...)
+}
+
+// Escape returns a copy of string s
+// with each special character disallowed in TSV
+// replaced by its two-character escape sequnce.
+// See Escapes for specific characters that are escaped
+// and their escape sequences.
+func Escape(s string) string {
+	return escaper.Replace(s)
+}
+
 // Unescape returns a copy of string s
 // with each non-overlapping two-character escape sequence
 // beginning with a backslash ('\\')
