@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -19,21 +20,30 @@ func main() {
 	if err != nil {
 		errExit(err)
 	}
-	if esc := true; esc {
+	if esc := false; esc {
 		if err := t.UnescapeTable(); err != nil {
 			errExit(err)
 		}
 	}
-	f, err := os.Open(os.Args[1])
-	if err != nil {
-		errExit(err)
-	}
-	tmpl, err := ReadTemplate(f)
-	if err != nil {
-		errExit(err)
-	}
-	if err := tmpl.Execute(os.Stdout, t); err != nil {
-		errExit(err)
+	switch os.Args[1] {
+	case "template":
+		f, err := os.Open(os.Args[2])
+		if err != nil {
+			errExit(err)
+		}
+		tmpl, err := ReadTemplate(f)
+		if err != nil {
+			errExit(err)
+		}
+		if err := tmpl.Execute(os.Stdout, t); err != nil {
+			errExit(err)
+		}
+	case "tojson":
+		io.WriteString(os.Stdout, t.ToJson()+"\n")
+	case "totsv":
+		io.WriteString(os.Stdout, t.ToTsv())
+	default:
+		errExit(fmt.Errorf("unrecognized command: %s", os.Args[1]))
 	}
 }
 
