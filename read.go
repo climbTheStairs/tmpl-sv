@@ -22,7 +22,7 @@ func ReadTsv(f io.Reader) (Table, error) {
 
 	for rowNum := 1; scanner.Scan(); rowNum++ {
 		cols := strings.Split(scanner.Text(), "\t")
-		if err := AppendRow(&t, cols); err != nil {
+		if err := t.AppendRow(cols); err != nil {
 			return t, fmt.Errorf("row %d: %v", rowNum, err)
 		}
 	}
@@ -31,7 +31,7 @@ func ReadTsv(f io.Reader) (Table, error) {
 
 // AppendRow creates a row from cols
 // and appends it to table t.
-func AppendRow(t *Table, cols []string) error {
+func (t *Table) AppendRow(cols []string) error {
 	if len(cols) != len(t.Head) {
 		return fmt.Errorf("invalid number of columns")
 	}
@@ -47,7 +47,7 @@ func AppendRow(t *Table, cols []string) error {
 // with the output of calling Escape on that cell.
 // If any cells contain invalid escapes or unescaped backslashes ('\\').
 // EscapeTable makes no further replacements and returns a non-nil error.
-func EscapeTable(t *Table) error {
+func (t *Table) EscapeTable() error {
 	for rowNum, row := range t.Body {
 		rowNum += 1
 		for colNum, colName := range t.Head {

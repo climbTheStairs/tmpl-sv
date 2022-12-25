@@ -20,7 +20,7 @@ func main() {
 		errExit(err)
 	}
 	if esc := true; esc {
-		if err := EscapeTable(&t); err != nil {
+		if err := t.EscapeTable(); err != nil {
 			errExit(err)
 		}
 	}
@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		errExit(err)
 	}
-	if err := ApplyTmpl(f, &t, os.Stdout); err != nil {
+	if err := t.ApplyTmpl(f, os.Stdout); err != nil {
 		errExit(err)
 	}
 }

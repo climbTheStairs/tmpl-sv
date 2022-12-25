@@ -8,7 +8,7 @@ import (
 
 // ApplyTmpl reads the template from r,
 // executes it on t, and writes the output to w.
-func ApplyTmpl(r io.Reader, t *Table, w io.Writer) error {
+func (t *Table) ApplyTmpl(r io.Reader, w io.Writer) error {
 	fnmap := template.FuncMap{
 		"toStrSlice": toStrSlice,
 	}
