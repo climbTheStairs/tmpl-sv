@@ -28,7 +28,11 @@ func main() {
 	if err != nil {
 		errExit(err)
 	}
-	if err := t.ApplyTmpl(f, os.Stdout); err != nil {
+	tmpl, err := ReadTemplate(f)
+	if err != nil {
+		errExit(err)
+	}
+	if err := tmpl.Execute(os.Stdout, t); err != nil {
 		errExit(err)
 	}
 }
