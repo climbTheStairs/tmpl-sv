@@ -8,21 +8,16 @@ import (
 // ToTsv returns table t in TSV format.
 func (t *Table) ToTsv() string {
 	lines := make([]string, 0, len(t.Body)+1)
-
-	line := make([]string, 0, len(t.Head))
-	for _, v := range t.Head {
-		line = append(line, Escape(v))
-	}
-	lines = append(lines, strings.Join(line, "\t"))
-
-	for _, row := range t.Body {
+	for i := 0; i < len(t.Body)+1; i++ {
 		line := make([]string, 0, len(t.Head))
-		for _, k := range t.Head {
-			line = append(line, Escape(row[k]))
+		for _, v := range t.Head {
+			if i > 0 {
+				v = t.Body[i-1][v]
+			}
+			line = append(line, Escape(v))
 		}
 		lines = append(lines, strings.Join(line, "\t"))
 	}
-
 	return strings.Join(lines, "\n") + "\n"
 }
 
