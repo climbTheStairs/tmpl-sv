@@ -1,3 +1,3 @@
-module tmpl-sv
+module tsv
 
 go 1.19
