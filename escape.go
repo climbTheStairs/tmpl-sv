@@ -5,20 +5,27 @@ import (
 	"strings"
 )
 
-var escapes = map[byte]byte{
+// Escapes is a map of the second character
+// of each two-character escape sequence
+// (i.e. the character that isn't a backslash ('\\'))
+// to the special character
+// represented by the whole escape sequence.
+var Escapes = map[byte]byte{
 	'n':  '\n',
 	'r':  '\r',
 	't':  '\t',
 	'\\': '\\',
 }
 
-// Escape returns a copy of string s
-// with each non-overlapping two-character substring
+// Unescape returns a copy of string s
+// with each non-overlapping two-character escape sequence
 // beginning with a backslash ('\\')
-// replaced by the character corresponding to that escape sequence.
+// replaced by the special character represented by the escape.
+// See Escapes for specific escape sequences
+// and their corresponding characters.
 // If s contains invalid escapes or unescaped backslashes,
-// Escape makes no further replacements and returns a non-nil error.
-func Escape(s string) (string, error) {
+// Unescape makes no further replacements and returns a non-nil error.
+func Unescape(s string) (string, error) {
 	var b strings.Builder
 	b.Grow(len(s))
 	start := 0
@@ -35,15 +42,15 @@ func Escape(s string) (string, error) {
 			return b.String(),
 				fmt.Errorf(`unescaped backslash ("\")`)
 		}
-		escaped, ok := escapes[s[i+1]]
+		unescaped, ok := Escapes[s[i+1]]
 		if !ok {
 			return b.String(),
 				fmt.Errorf(`invalid escape: \%c`, s[i+1])
 		}
 		b.WriteString(s[start:i])
-		b.WriteByte(escaped)
+		b.WriteByte(unescaped)
 		// Move forward in s by 2,
-		// to pass the two-character escape substring.
+		// to pass by the two-character escape sequence.
 		i += 2
 		start = i
 	}

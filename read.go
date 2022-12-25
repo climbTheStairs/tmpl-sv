@@ -43,21 +43,21 @@ func (t *Table) AppendRow(cols []string) error {
 	return nil
 }
 
-// EscapeTable replaces each cell in t
-// with the output of calling Escape on that cell.
+// UnescapeTable replaces each cell in t
+// with the output of calling Unescape on that cell.
 // If any cells contain invalid escapes or unescaped backslashes ('\\').
-// EscapeTable makes no further replacements and returns a non-nil error.
-func (t *Table) EscapeTable() error {
+// UnescapeTable makes no further replacements and returns a non-nil error.
+func (t *Table) UnescapeTable() error {
 	for rowNum, row := range t.Body {
 		rowNum += 1
 		for colNum, colName := range t.Head {
 			colNum += 1
-			escaped, err := Escape(row[colName])
+			unescaped, err := Unescape(row[colName])
 			if err != nil {
 				return fmt.Errorf(`row %d: column %d "%s": %v`,
 					rowNum, colNum, colName, err)
 			}
-			row[colName] = escaped
+			row[colName] = unescaped
 		}
 	}
 	return nil

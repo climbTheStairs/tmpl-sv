@@ -20,7 +20,7 @@ func main() {
 		errExit(err)
 	}
 	if esc := true; esc {
-		if err := t.EscapeTable(); err != nil {
+		if err := t.UnescapeTable(); err != nil {
 			errExit(err)
 		}
 	}

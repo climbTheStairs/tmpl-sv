@@ -34,30 +34,30 @@ var errTests = map[string]string{
 	`\a`:    `invalid escape: \a`,
 }
 
-func TestEscape(t *testing.T) {
+func TestUnescape(t *testing.T) {
 	for in, expect := range simpleTests {
-		out, err := Escape(in)
+		out, err := Unescape(in)
 		if err != nil || out != expect {
-			t.Fatalf(`Escape(%q) = %q, %v; expected %q, %v`,
+			t.Fatalf(`Unescape(%q) = %q, %v; expected %q, %v`,
 				in, out, err, expect, nil)
 		}
 	}
 }
 
-func TestEscapeErr(t *testing.T) {
+func TestUnescapeErr(t *testing.T) {
 	for in, expect := range errTests {
-		_, err := Escape(in)
+		_, err := Unescape(in)
 		if err == nil || err.Error() != expect {
-			t.Fatalf(`Escape(%q) = _, %v; expected _, %v`,
+			t.Fatalf(`Unescape(%q) = _, %v; expected _, %v`,
 				in, err, expect)
 		}
 	}
 }
 
-func BenchmarkEscape(b *testing.B) {
+func BenchmarkUnescape(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		var t *testing.T
-		TestEscape(t)
-		TestEscapeErr(t)
+		TestUnescape(t)
+		TestUnescapeErr(t)
 	}
 }
