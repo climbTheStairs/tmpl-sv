@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"os"
 )
 
@@ -39,9 +38,13 @@ func main() {
 			errExit(err)
 		}
 	case "tojson":
-		io.WriteString(os.Stdout, t.ToJson()+"\n")
+		fmt.Println(t.ToJson())
 	case "totsv":
-		io.WriteString(os.Stdout, t.ToTsv())
+		tsv, err := t.ToTsv(false)
+		if err != nil {
+			errExit(err)
+		}
+		fmt.Print(tsv)
 	default:
 		errExit(fmt.Errorf("unrecognized command: %s", os.Args[1]))
 	}
