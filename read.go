@@ -43,9 +43,9 @@ func (t *Table) AppendRow(cols []string) error {
 	return nil
 }
 
-// UnescapeTable replaces each cell in t
-// with the output of calling Unescape on that cell.
-// If any cells contain invalid escapes or unescaped backslashes ('\\').
+// UnescapeTable replaces each field in t
+// with the output of calling Unescape on that field.
+// If any fields contain invalid escapes or unescaped backslashes ('\\').
 // UnescapeTable makes no further replacements and returns a non-nil error.
 func (t *Table) UnescapeTable() error {
 	for rowNum, row := range t.Body {
