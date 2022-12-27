@@ -29,7 +29,7 @@ func (t *Table) ToTsv(esc bool) (string, error) {
 			if err != nil {
 				return "", fmt.Errorf(
 					`row %d: column %d "%s": %v`,
-					i, j, k, err)
+					i, j+1, k, err)
 			}
 			line[j] = v
 		}

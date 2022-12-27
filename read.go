@@ -49,13 +49,11 @@ func (t *Table) AppendRow(cols []string) error {
 // UnescapeTable makes no further replacements and returns a non-nil error.
 func (t *Table) UnescapeTable() error {
 	for i, row := range t.Body {
-		i += 1
 		for j, k := range t.Head {
-			j += 1
 			unescaped, err := Unescape(row[k])
 			if err != nil {
 				return fmt.Errorf(`row %d: column %d "%s": %v`,
-					i, j, k, err)
+					i+1, j+1, k, err)
 			}
 			row[k] = unescaped
 		}
