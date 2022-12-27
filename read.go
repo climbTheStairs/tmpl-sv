@@ -20,10 +20,10 @@ func ReadTsv(f io.Reader) (Table, error) {
 	}
 	t.Head = strings.Split(scanner.Text(), "\t")
 
-	for rowNum := 1; scanner.Scan(); rowNum++ {
+	for i := 1; scanner.Scan(); i++ {
 		cols := strings.Split(scanner.Text(), "\t")
 		if err := t.AppendRow(cols); err != nil {
-			return t, fmt.Errorf("row %d: %v", rowNum, err)
+			return t, fmt.Errorf("row %d: %v", i, err)
 		}
 	}
 	return t, nil
@@ -48,16 +48,16 @@ func (t *Table) AppendRow(cols []string) error {
 // If any fields contain invalid escapes or unescaped backslashes ('\\').
 // UnescapeTable makes no further replacements and returns a non-nil error.
 func (t *Table) UnescapeTable() error {
-	for rowNum, row := range t.Body {
-		rowNum += 1
-		for colNum, colName := range t.Head {
-			colNum += 1
-			unescaped, err := Unescape(row[colName])
+	for i, row := range t.Body {
+		i += 1
+		for j, k := range t.Head {
+			j += 1
+			unescaped, err := Unescape(row[k])
 			if err != nil {
 				return fmt.Errorf(`row %d: column %d "%s": %v`,
-					rowNum, colNum, colName, err)
+					i, j, k, err)
 			}
-			row[colName] = unescaped
+			row[k] = unescaped
 		}
 	}
 	return nil

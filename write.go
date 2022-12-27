@@ -11,10 +11,10 @@ func (t *Table) ToTsv() string {
 	lines := make([]string, len(t.Body)+1)
 	for i := 0; i < len(t.Body)+1; i++ {
 		line := make([]string, len(t.Head))
-		for j, colName := range t.Head {
-			v := colName
+		for j, k := range t.Head {
+			v := k
 			if i > 0 {
-				v = t.Body[i-1][colName]
+				v = t.Body[i-1][k]
 			}
 			line[j] = Escape(v)
 		}
