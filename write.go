@@ -6,16 +6,19 @@ import (
 
 // ToTsv returns table t in TSV format.
 func (t *Table) ToTsv() string {
-	lines := make([]string, 0, len(t.Body)+1)
+	// len(t.Body) is added 1 because t.Head
+	// becomes the first line.
+	lines := make([]string, len(t.Body)+1)
 	for i := 0; i < len(t.Body)+1; i++ {
-		line := make([]string, 0, len(t.Head))
-		for _, v := range t.Head {
+		line := make([]string, len(t.Head))
+		for j, colName := range t.Head {
+			v := colName
 			if i > 0 {
-				v = t.Body[i-1][v]
+				v = t.Body[i-1][colName]
 			}
-			line = append(line, Escape(v))
+			line[j] = Escape(v)
 		}
-		lines = append(lines, strings.Join(line, "\t"))
+		lines[i] = strings.Join(line, "\t")
 	}
 	return strings.Join(lines, "\n") + "\n"
 }
