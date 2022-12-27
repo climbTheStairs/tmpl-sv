@@ -15,14 +15,9 @@ type Table struct {
 }
 
 func main() {
-	t, err := ReadTsv(os.Stdin)
+	t, err := ReadTsv(os.Stdin, false)
 	if err != nil {
 		errExit(err)
-	}
-	if esc := false; esc {
-		if err := t.UnescapeTable(); err != nil {
-			errExit(err)
-		}
 	}
 	switch os.Args[1] {
 	case "template":

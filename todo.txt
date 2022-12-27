@@ -1,4 +1,3 @@
-merge Table.UnescapeTable into ReadTsv
 CLI flags
 documentation
 write more tests
