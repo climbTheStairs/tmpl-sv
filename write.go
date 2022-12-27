@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -22,13 +21,12 @@ func (t *Table) ToTsv() string {
 }
 
 // ToJson returns table t as a JSON array.
-// Escaping special JSON characters is yet to be implemented!!!
 func (t *Table) ToJson() string {
 	arr := make([]string, len(t.Body))
 	for i, row := range t.Body {
 		obj := make([]string, len(t.Head))
 		for i, k := range t.Head {
-			obj[i] = fmt.Sprintf(`"%s":"%s"`, k, row[k])
+			obj[i] = escapeJson(k) + ":" + escapeJson(row[k])
 		}
 		arr[i] = "{" + strings.Join(obj, ",") + "}"
 	}

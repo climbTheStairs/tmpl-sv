@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -78,4 +80,27 @@ func Unescape(s string) (string, error) {
 	// must be written if it exists.
 	b.WriteString(s[start:])
 	return b.String(), nil
+}
+
+// escapeJson wraps goodJsonMarshal, panicking on errors.
+func escapeJson(s string) string {
+	b, err := goodJsonMarshal(s)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
+
+// goodJsonMarshal is like json.Marshal but good.
+// goodJsonMarshal is identical to json.Marshal
+// but without its annoying and unasked-for escaping of characters
+// that unnecessarily attempts to make the output HTML-safe.
+func goodJsonMarshal(v any) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(v)
+	// Remove extra newline stupidly added by json.Encoder.Encode.
+	b := buf.Bytes()[:buf.Len()-1]
+	return b, err
 }
