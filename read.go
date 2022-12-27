@@ -9,8 +9,8 @@ import (
 
 // ReadTsv creates and returns a new table
 // using TSV data read from f.
-func ReadTsv(f io.Reader) (Table, error) {
-	t := Table{}
+func ReadTsv(f io.Reader) (*Table, error) {
+	var t *Table
 
 	scanner := bufio.NewScanner(f)
 	scanner.Split(scanPosixLines)
@@ -21,23 +21,23 @@ func ReadTsv(f io.Reader) (Table, error) {
 	t.Head = strings.Split(scanner.Text(), "\t")
 
 	for i := 1; scanner.Scan(); i++ {
-		cols := strings.Split(scanner.Text(), "\t")
-		if err := t.AppendRow(cols); err != nil {
+		fields := strings.Split(scanner.Text(), "\t")
+		if err := t.AppendRow(fields); err != nil {
 			return t, fmt.Errorf("row %d: %v", i, err)
 		}
 	}
 	return t, nil
 }
 
-// AppendRow creates a row from cols
+// AppendRow creates a row from fields
 // and appends it to table t.
-func (t *Table) AppendRow(cols []string) error {
-	if len(cols) != len(t.Head) {
+func (t *Table) AppendRow(fields []string) error {
+	if len(fields) != len(t.Head) {
 		return fmt.Errorf("invalid number of columns")
 	}
 	row := make(map[string]string)
-	for i, v := range t.Head {
-		row[v] = cols[i]
+	for i, k := range t.Head {
+		row[k] = fields[i]
 	}
 	t.Body = append(t.Body, row)
 	return nil
@@ -45,8 +45,8 @@ func (t *Table) AppendRow(cols []string) error {
 
 // UnescapeTable replaces each field in t
 // with the output of calling Unescape on that field.
-// If any fields contain invalid escapes or unescaped backslashes ('\\').
-// UnescapeTable makes no further replacements and returns a non-nil error.
+// If any field causes Unescape to return an error,
+// UnescapeTable returns that wrapped error.
 func (t *Table) UnescapeTable() error {
 	for i, row := range t.Body {
 		for j, k := range t.Head {

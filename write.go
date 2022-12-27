@@ -15,6 +15,7 @@ var ForbiddenChars = []byte{'\n', '\t'}
 // if and only if esc is false
 // and a field contains characters in ForbiddenChars.
 func (t *Table) ToTsv(esc bool) (string, error) {
+	var err error
 	// len(t.Body) is added 1 because t.Head
 	// becomes the first line.
 	lines := make([]string, len(t.Body)+1)
@@ -25,7 +26,7 @@ func (t *Table) ToTsv(esc bool) (string, error) {
 			if i > 0 {
 				v = t.Body[i-1][k]
 			}
-			v, err := processField(v, esc)
+			v, err = escapeOrValidateField(v, esc)
 			if err != nil {
 				return "", fmt.Errorf(
 					`row %d: column %d "%s": %v`,
@@ -38,9 +39,11 @@ func (t *Table) ToTsv(esc bool) (string, error) {
 	return strings.Join(lines, "\n") + "\n", nil
 }
 
-// processField is a helper function for Table.ToTsv.
-// processField escapes, if necessary, and validates field.
-func processField(field string, esc bool) (string, error) {
+// escapeOrValidateField is a helper function for Table.ToTsv.
+// escapeOrValidateField escapes field, if necessary;
+// otherwise, it checks that field does not contain
+// characters that must be escaped.
+func escapeOrValidateField(field string, esc bool) (string, error) {
 	if esc {
 		return Escape(field), nil
 	}
