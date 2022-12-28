@@ -24,8 +24,7 @@ var escaper *strings.Replacer
 func init() {
 	oldnew := make([]string, 0, len(Escapes)*2)
 	for escaped, unescaped := range Escapes {
-		oldnew = append(oldnew,
-			string(unescaped), "\\"+string(escaped))
+		oldnew = append(oldnew, string(unescaped), "\\"+string(escaped))
 	}
 	escaper = strings.NewReplacer(oldnew...)
 }
@@ -61,13 +60,11 @@ func Unescape(s string) (string, error) {
 		if i+1 == len(s) {
 			// s[i] is the last character in s
 			// and therefore cannot start an escape.
-			return b.String(),
-				fmt.Errorf(`unescaped backslash ("\")`)
+			return b.String(), fmt.Errorf(`unescaped backslash ("\")`)
 		}
 		unescaped, ok := Escapes[s[i+1]]
 		if !ok {
-			return b.String(),
-				fmt.Errorf(`invalid escape: \%c`, s[i+1])
+			return b.String(), fmt.Errorf(`invalid escape: \%c`, s[i+1])
 		}
 		b.WriteString(s[start:i])
 		b.WriteByte(unescaped)

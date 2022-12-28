@@ -28,8 +28,7 @@ func (t *Table) ToTsv(esc bool) (string, error) {
 			}
 			v, err = escapeOrValidateField(v, esc)
 			if err != nil {
-				return "", fmt.Errorf(
-					`row %d: column %d "%s": %v`,
+				return "", fmt.Errorf(`row %d: column %d "%s": %v`,
 					i, j+1, k, err)
 			}
 			line[j] = v
@@ -50,8 +49,7 @@ func escapeOrValidateField(field string, esc bool) (string, error) {
 	for _, c := range ForbiddenChars {
 		sc := string(c)
 		if strings.Contains(field, sc) {
-			return field, fmt.Errorf(`forbidden character: %s`,
-				Escape(sc))
+			return field, fmt.Errorf(`forbidden character: %s`, Escape(sc))
 		}
 	}
 	return field, nil
