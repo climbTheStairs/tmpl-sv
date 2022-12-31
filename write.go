@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -8,6 +10,16 @@ import (
 // ForbiddenCharacters contains all the characters
 // forbidden in text/tab-separated-values.
 var ForbiddenChars = []byte{'\n', '\t'}
+
+var escaper *strings.Replacer
+
+func init() {
+	oldnew := make([]string, 0, len(Escapes)*2)
+	for escaped, unescaped := range Escapes {
+		oldnew = append(oldnew, string(unescaped), "\\"+string(escaped))
+	}
+	escaper = strings.NewReplacer(oldnew...)
+}
 
 // ToTsv returns table t in TSV format.
 // If esc is true, ToTsv will call Escape on each field.
@@ -55,6 +67,15 @@ func escapeOrValidateField(field string, esc bool) (string, error) {
 	return field, nil
 }
 
+// Escape returns a copy of string s
+// with each special character disallowed in TSV
+// replaced by its two-character escape sequnce.
+// See Escapes for specific characters that are escaped
+// and their escape sequences.
+func Escape(s string) string {
+	return escaper.Replace(s)
+}
+
 // ToJson returns table t as a JSON array.
 func (t *Table) ToJson() string {
 	arr := make([]string, len(t.Body))
@@ -66,4 +87,27 @@ func (t *Table) ToJson() string {
 		arr[i] = "{" + strings.Join(obj, ",") + "}"
 	}
 	return "[" + strings.Join(arr, ",") + "]"
+}
+
+// escapeJson wraps goodJsonMarshal, panicking on errors.
+func escapeJson(s string) string {
+	b, err := goodJsonMarshal(s)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
+
+// goodJsonMarshal is like json.Marshal but good.
+// goodJsonMarshal is identical to json.Marshal
+// but without its annoying and unasked-for escaping of characters
+// that unnecessarily attempts to make the output HTML-safe.
+func goodJsonMarshal(v any) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(v)
+	// Remove extra newline stupidly added by json.Encoder.Encode.
+	b := buf.Bytes()[:buf.Len()-1]
+	return b, err
 }

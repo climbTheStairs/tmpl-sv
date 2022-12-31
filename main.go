@@ -6,6 +6,18 @@ import (
 	"os"
 )
 
+// Escapes is a map of the second character
+// of each two-character escape sequence
+// (i.e. the character that isn't a backslash ('\\'))
+// to the special character
+// represented by the whole escape sequence.
+var Escapes = map[byte]byte{
+	'n':  '\n',
+	'r':  '\r',
+	't':  '\t',
+	'\\': '\\',
+}
+
 // Table represents a table.
 type Table struct {
 	// Head contains the name of each column.
