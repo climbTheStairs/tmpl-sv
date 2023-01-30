@@ -68,7 +68,7 @@ func scanPosixLines(d []byte, atEOF bool) (int, []byte, error) {
 // and appends it to table t.
 func (t *Table) AppendRow(fields []string) error {
 	if len(fields) != len(t.Head) {
-		return fmt.Errorf("invalid number of columns")
+		return fmt.Errorf("invalid number of fields")
 	}
 	row := make(map[string]string)
 	for i, k := range t.Head {

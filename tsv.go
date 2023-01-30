@@ -33,13 +33,13 @@ func init() {
 	escaper = strings.NewReplacer(oldnew...)
 }
 
-// ReadTsv creates and returns a new table
-// using TSV data read from f.
-func ReadTsv(f io.Reader, esc bool) (*Table, error) {
+// ReadTsv reads TSV data from r
+// and creates and returns a new table.
+func ReadTsv(r io.Reader, esc bool) (*Table, error) {
 	var t *Table
 	var err error
 
-	scanner := bufio.NewScanner(f)
+	scanner := bufio.NewScanner(r)
 	scanner.Split(scanPosixLines)
 
 	if ok := scanner.Scan(); !ok {
