@@ -36,8 +36,8 @@ func init() {
 // ReadTsv reads TSV data from r
 // and creates and returns a new table.
 func ReadTsv(r io.Reader, esc bool) (*Table, error) {
-	var t *Table
 	var err error
+	t := &Table{}
 
 	scanner := bufio.NewScanner(r)
 	scanner.Split(scanPosixLines)
