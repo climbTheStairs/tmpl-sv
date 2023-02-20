@@ -1,4 +1,4 @@
-CLI flags
-documentation
-tests
-ReadJson
+- CLI flags
+- documentation
+- tests
+- ReadJson
