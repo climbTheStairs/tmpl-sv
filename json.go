@@ -77,10 +77,13 @@ func (t *Table) ToJson() string {
 	return "[" + strings.Join(arr, ",") + "]"
 }
 
-// escapeJson wraps goodJsonMarshal, panicking on errors.
+// escapeJson wraps goodJsonMarshal.
 func escapeJson(s string) string {
 	b, err := goodJsonMarshal(s)
 	if err != nil {
+		// goodJsonMarshal should never error with a string;
+		// therefore, it is safe to do whatever with err
+		// because this will never occur.
 		panic(err)
 	}
 	return string(b)
@@ -95,7 +98,11 @@ func goodJsonMarshal(v any) ([]byte, error) {
 	enc := json.NewEncoder(&buf)
 	enc.SetEscapeHTML(false)
 	err := enc.Encode(v)
-	// Remove extra newline stupidly added by json.Encoder.Encode.
+	// Remove extra newline stupidly added by json.Encoder.Encode
+	// which is different for some reason from json.Marshal
+	// and the devs [REFUSE to fix]!
+	//
+	// [REFUSE to fix]: https://github.com/golang/go/issues/37083
 	b := buf.Bytes()[:buf.Len()-1]
 	return b, err
 }
