@@ -3,8 +3,66 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
+	"sort"
 	"strings"
 )
+
+// ReadJson reads JSON data from r
+// and creates and returns a new table.
+// I know this does not work for all inputs
+// and I don't know if this works at all.
+func ReadJson(r io.Reader) (*Table, error) {
+	var t *Table
+
+	var d []map[string]any
+	dec := json.NewDecoder(r)
+	if err := dec.Decode(&d); err != nil {
+		return t, err
+	}
+	if len(d) == 0 {
+		return t, fmt.Errorf("no data")
+	}
+
+	t.Head = make([]string, 0, len(d[0]))
+	for k := range d[0] {
+		t.Head = append(t.Head, k)
+	}
+	sort.Strings(t.Head)
+
+	for i, fields := range d {
+		i += 1
+		if len(fields) != len(t.Head) {
+			return t, fmt.Errorf("row %d: invalid number of fields", i)
+		}
+		row := make(map[string]string)
+		for _, k := range t.Head {
+			v, ok := fields[k]
+			if !ok {
+				return t, fmt.Errorf("%d...", i+1)
+			}
+			switch s := v.(type) {
+			case string:
+				row[k] = s
+			case bool:
+				row[k] = "0"
+				if s {
+					row[k] = "1"
+				}
+			case json.Number:
+				row[k] = string(s)
+			default:
+				if s != nil {
+					return t, fmt.Errorf("...")
+				}
+				row[k] = ""
+			}
+		}
+		t.Body = append(t.Body, row)
+	}
+	return t, nil
+}
 
 // ToJson returns table t as a JSON array.
 func (t *Table) ToJson() string {
