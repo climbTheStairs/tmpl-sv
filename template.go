@@ -3,11 +3,16 @@ package main
 import (
 	"html/template"
 	"io"
+	"strconv"
 	"strings"
 )
 
 var funcMap = template.FuncMap{
-	"toStrSlice": toStrSlice,
+	"int":   strconv.Atoi,
+	"split": strings.Split,
+	"add":   func(a, b int) int { return a + b },
+	"map":   func(a []string, i int) string { return a[i] },
+	"slice": func(a ...string) []string { return a },
 }
 
 // ReadTemplate reads from r
@@ -19,11 +24,4 @@ func ReadTemplate(r io.Reader) (*template.Template, error) {
 		return nil, err
 	}
 	return template.New("").Funcs(funcMap).Parse(string(b))
-}
-
-// toStrSlice is meant to be used inside templates.
-// It converts a string to a string slice
-// by splitting on commas (",").
-func toStrSlice(s string) []string {
-	return strings.Split(s, ",")
 }
