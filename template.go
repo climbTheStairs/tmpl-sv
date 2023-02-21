@@ -8,10 +8,22 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"int":     strconv.Atoi,
-	"split":   strings.Split,
-	"add":     func(a, b int) int { return a + b },
-	"mkslice": func(a ...string) []string { return a },
+	"int":   strconv.Atoi,
+	"split": strings.Split,
+	"str":   strconv.Itoa,
+	"add":   func(a, b int) int {
+		return a + b
+	},
+	"map":   func(props ...string) map[string]string {
+		if len(props) % 2 != 0 {
+			return nil
+		}
+		m := make(map[string]string)
+		for i := 0; i < len(props); i += 2 {
+			m[props[i]] = props[i+1]
+		}
+		return m
+	},
 }
 
 // ReadTemplate reads from r
