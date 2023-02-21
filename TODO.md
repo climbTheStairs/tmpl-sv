@@ -3,6 +3,7 @@
 - tests
 - ReadJson
 	- make correct and complete
+- make text/template safe for HTML
 - read these URLs:
 	- [encoding/csv]<https://pkg.go.dev/encoding/csv>
 	- [encoding/json: no way to preserve the order of map keys]<https://github.com/golang/go/issues/27179>

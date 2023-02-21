@@ -1,10 +1,10 @@
 package main
 
 import (
-	"html/template"
 	"io"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
 var funcMap = template.FuncMap{
